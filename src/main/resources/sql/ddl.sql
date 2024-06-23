@@ -4,5 +4,6 @@ CREATE TABLE users
     firstname VARCHAR(128),
     lastname VARCHAR(128),
     birthdate DATE,
-    role VARCHAR(32)
+    role VARCHAR(32),
+    info JSONB
 );

@@ -1,9 +1,12 @@
 package ru.schepachkov.entity;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import ru.schepachkov.converter.BirthdayConverter;
 
 import javax.persistence.*;
@@ -16,6 +19,7 @@ import java.util.Objects;
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
+@TypeDef(name = "my-alias-for-jsonb", typeClass = JsonBinaryType.class)
 public class User {
 
     @Id
@@ -34,4 +38,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    //@Type(type = "com.vladmihalcea.hibernate.type.json.JsonBinaryType")
+    //@Type(type = "jsonb") // - грубо говоря алиас, чтобы не писать класс
+    @Type(type = "my-alias-for-jsonb")
+    private String info;
 }
