@@ -29,7 +29,7 @@ public class User {
     private String lastName;
 
     @Column(name = "birthdate")
-    @Convert(converter = BirthdayConverter.class)
+    //@Convert(converter = BirthdayConverter.class)
     private Birthday birthDate;
 
     @Enumerated(EnumType.STRING)
