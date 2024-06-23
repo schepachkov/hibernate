@@ -4,6 +4,5 @@ CREATE TABLE users
     firstname VARCHAR(128),
     lastname VARCHAR(128),
     birthdate DATE,
-    age INT,
     role VARCHAR(32)
 );

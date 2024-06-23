@@ -3,6 +3,7 @@ package ru.schepachkov;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import ru.schepachkov.entity.Birthday;
 import ru.schepachkov.entity.Role;
 import ru.schepachkov.entity.User;
 
@@ -23,9 +24,8 @@ public class Main {
                 .userName("someMail@gmail.com")
                 .firstName("Ivan")
                 .lastName("Ivanon")
-                .birthDate(LocalDate.of(1998, 5, 20))
+                .birthDate(new Birthday(LocalDate.of(1998, 5, 20)))
                 .role(Role.ADMIN)
-                .age(26)
                 .build();
             session.save(user);
             session.getTransaction().commit();
