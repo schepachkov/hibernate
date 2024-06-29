@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.schepachkov.converter.BirthdayConverter;
 import ru.schepachkov.entity.Birthday;
+import ru.schepachkov.entity.PersonalInfo;
 import ru.schepachkov.entity.Role;
 import ru.schepachkov.entity.User;
 
@@ -50,8 +51,10 @@ public class Main {
         String pk = "1";
         User user = User.builder()
             .userName(pk)
-            .firstName("Ivan25")
-            .lastName("Ivan")
+            .personalInfo(PersonalInfo.builder()
+                .firstName("Ivan25")
+                .lastName("Ivan")
+                .build())
             .build();
         session.saveOrUpdate(user);
         session.flush();
@@ -63,8 +66,10 @@ public class Main {
         String pk = "1";
         User user = User.builder()
             .userName(pk)
-            .firstName("Internal transaction user")
-            .lastName("kek")
+            .personalInfo(PersonalInfo.builder()
+                .firstName("Internal transaction user")
+                .lastName("kek")
+                .build())
             .build();
         session.saveOrUpdate(user);
         session.getTransaction().commit();
@@ -72,12 +77,14 @@ public class Main {
 
     private static User createFullFilledUser() {
         LOG.trace("Method 'createFullFilledUser' called.");
-        String pk = "someMail9@gmail.com";
+        String pk = "someMail@gmail.com";
         return User.builder()
             .userName(pk)
-            .firstName("Ivan25")
-            .lastName("Ivan")
-            .birthDate(new Birthday(LocalDate.of(1998, 5, 20)))
+            .personalInfo(PersonalInfo.builder()
+                .firstName("Petr1")
+                .lastName("Petrovich")
+                .birthDate(new Birthday(LocalDate.of(1998, 5, 20)))
+                .build())
             .info("{\"type\": \"string\",\"game\": \"ps3\"}")
             .role(Role.ADMIN)
             .build();

@@ -26,15 +26,8 @@ public class User {
     @Column(name = "username")
     private String userName;
 
-    @Column(name = "firstname")
-    private String firstName;
-
-    @Column(name = "lastname")
-    private String lastName;
-
-    @Column(name = "birthdate")
-    //@Convert(converter = BirthdayConverter.class)
-    private Birthday birthDate;
+    @Embedded   // не обязательная аннотация, но полезна для наглядности
+    private PersonalInfo personalInfo;
 
     @Enumerated(EnumType.STRING)
     private Role role;
