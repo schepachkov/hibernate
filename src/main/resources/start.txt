@@ -1,1 +1,1 @@
-docker run --name docker-for-hibernate -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15
+docker run --name postgres-for-hibernate -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15

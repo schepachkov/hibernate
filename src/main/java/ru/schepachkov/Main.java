@@ -21,22 +21,56 @@ public class Main {
         configuration.configure();
 
 
-        try (SessionFactory sessionFactory = configuration.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+        try (SessionFactory sessionFactory = configuration.buildSessionFactory(); Session session = sessionFactory.openSession()) {
+            //simpleSaveWithoutTransaction(session);
+            simpleSaveWithInternalTransaction(session);
+            User user = createFullFilledUser();
+
             session.beginTransaction();
-            User user = User.builder()
-                .userName("someMail9@gmail.com")
-                .firstName("Ivan")
-                .lastName("Ivanon")
-                .birthDate(new Birthday(LocalDate.of(1998, 5, 20)))
-                .info("{\"type\": \"string\",\"game\": \"ps3\"}")
-                .role(Role.ADMIN)
-                .build();
-            session.save(user);
+            session.saveOrUpdate(user);
             session.getTransaction().commit();
 
-            System.out.println("Закончил работу!");
+            User userFromHibernate = findUserById(session, user.getUserName());
         }
+    }
 
+    private static void simpleSaveWithoutTransaction(Session session) {
+        // не будет работать тк Хибер требуется наличия транзакции при модификации сущностей
+        String pk = "1";
+        User user = User.builder()
+            .userName(pk)
+            .firstName("Ivan25")
+            .lastName("Ivan")
+            .build();
+        session.saveOrUpdate(user);
+        session.flush();
+    }
+
+    private static void simpleSaveWithInternalTransaction(Session session) {
+        session.getTransaction().begin();
+        String pk = "1";
+        User user = User.builder()
+            .userName(pk)
+            .firstName("Internal transaction user")
+            .lastName("kek")
+            .build();
+        session.saveOrUpdate(user);
+        session.getTransaction().commit();
+    }
+
+    private static User createFullFilledUser() {
+        String pk = "someMail9@gmail.com";
+        return User.builder()
+            .userName(pk)
+            .firstName("Ivan25")
+            .lastName("Ivan")
+            .birthDate(new Birthday(LocalDate.of(1998, 5, 20)))
+            .info("{\"type\": \"string\",\"game\": \"ps3\"}")
+            .role(Role.ADMIN)
+            .build();
+    }
+
+    private static User findUserById(Session session, String pk) {
+        return session.get(User.class, pk);
     }
 }
