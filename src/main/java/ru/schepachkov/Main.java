@@ -7,38 +7,28 @@ import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.schepachkov.converter.BirthdayConverter;
-import ru.schepachkov.entity.Birthday;
-import ru.schepachkov.entity.PersonalInfo;
-import ru.schepachkov.entity.Role;
-import ru.schepachkov.entity.User;
+import ru.schepachkov.entity.*;
+import ru.schepachkov.util.HibernateUtil;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws SQLException {
-        LOG.info("main method starts!");
-        Configuration configuration = new Configuration();
-        configuration.addAttributeConverter(BirthdayConverter.class, true);
-        configuration.registerTypeOverride(new JsonBinaryType());
-        configuration.configure();
-
-
-        try (SessionFactory sessionFactory = configuration.buildSessionFactory(); Session session = sessionFactory.openSession()) {
-            //simpleSaveWithoutTransaction(session);
-            LOG.debug("Session is created!");
-            simpleSaveWithInternalTransaction(session);
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory(); Session session = sessionFactory.openSession()) {
             User user = createFullFilledUser();
-
             session.beginTransaction();
+
+            session.saveOrUpdate(user.getCompany());
             session.saveOrUpdate(user);
+            //User user1 = session.get(User.class, 3L);
+
             session.getTransaction().commit();
             LOG.info("User saved in main method. User - {}", user);
-
-            User userFromHibernate = findUserById(session, user.getUserName());
             LOG.debug("Session is closed!");
         }
 
@@ -48,9 +38,9 @@ public class Main {
     private static void simpleSaveWithoutTransaction(Session session) {
         // не будет работать тк Хибер требуется наличия транзакции при модификации сущностей
         LOG.trace("Method 'simpleSaveWithoutTransaction' called.");
-        String pk = "1";
+        String userName = "1";
         User user = User.builder()
-            .userName(pk)
+            .userName(userName)
             .personalInfo(PersonalInfo.builder()
                 .firstName("Ivan25")
                 .lastName("Ivan")
@@ -77,9 +67,9 @@ public class Main {
 
     private static User createFullFilledUser() {
         LOG.trace("Method 'createFullFilledUser' called.");
-        String pk = "someMail@gmail.com";
+        String userName = "kek@gmail.com" + UUID.randomUUID().toString().substring(0, 8);
         return User.builder()
-            .userName(pk)
+            .userName(userName)
             .personalInfo(PersonalInfo.builder()
                 .firstName("Petr1")
                 .lastName("Petrovich")
@@ -87,10 +77,13 @@ public class Main {
                 .build())
             .info("{\"type\": \"string\",\"game\": \"ps3\"}")
             .role(Role.ADMIN)
+            .company(Company.builder()
+                .name("Some-company" + UUID.randomUUID().toString().substring(0, 8))
+                .build())
             .build();
     }
 
-    private static User findUserById(Session session, String pk) {
+    private static User findUserById(Session session, Long pk) {
         LOG.trace("Method 'findUserById' called.");
         return session.get(User.class, pk);
     }

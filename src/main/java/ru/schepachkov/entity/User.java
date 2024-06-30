@@ -1,21 +1,16 @@
 package ru.schepachkov.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import ru.schepachkov.converter.BirthdayConverter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "company")// чтоб случайно lazy объект не дернуть. Дебаг в идее использует toString, например
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
@@ -23,7 +18,10 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @Column(name = "username")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "username", unique = true)
     private String userName;
 
     @Embedded   // не обязательная аннотация, но полезна для наглядности
@@ -36,4 +34,10 @@ public class User {
     //@Type(type = "jsonb") // - грубо говоря алиас, чтобы не писать класс
     @Type(type = "my-alias-for-jsonb")
     private String info;
+
+    // @ManyToOne или @ManyToOne(optional = true) - дефолт, который будет использовать outer join
+    // @ManyToOne(optional = false) - заменит outer join на inner join, это лучше для производительности и используем, если в БД company_id содержит constraint not null
+    @ManyToOne(optional = true, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "company_id")
+    private Company company;
 }
