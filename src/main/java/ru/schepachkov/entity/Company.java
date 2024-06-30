@@ -22,7 +22,7 @@ public class Company {
     private String name;
 
     @Builder.Default    // для инициализации в билдере дефолтного значения new HashSet<>();
-    @OneToMany(mappedBy = "company")// mappedBy - используется для установки двунаправленной связи - ссылаемся на имя поля в классе User
+    @OneToMany(mappedBy = "company", orphanRemoval = true)// mappedBy - используется для установки двунаправленной связи - ссылаемся на имя поля в классе User
     //@JoinColumn(name = "company_id") - используется для односторонней связи - ссылка на колонку, являющуюся fk в реляционной таблице.
     private Set<User> users = new HashSet<>();
 
