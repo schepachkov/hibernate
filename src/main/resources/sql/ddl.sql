@@ -13,5 +13,5 @@ CREATE TABLE users
     birthdate  DATE,
     role       VARCHAR(32),
     info       JSONB,
-    company_id INT references company (id)
+    company_id INT references company (id) not null
 );
