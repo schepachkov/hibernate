@@ -24,10 +24,9 @@ public class Main {
             session.beginTransaction();
 
             //session.saveOrUpdate(user.getCompany());
-            //session.saveOrUpdate(user);
-            //User user1 = session.get(User.class, 3L);
+            session.saveOrUpdate(user);
+            User user1 = session.get(User.class, 3L);
 
-            Company company = session.get(Company.class, 1);
 
             session.getTransaction().commit();
             LOG.info("User saved in main method. User - {}", user);

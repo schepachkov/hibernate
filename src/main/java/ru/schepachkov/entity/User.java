@@ -37,7 +37,7 @@ public class User {
 
     // @ManyToOne или @ManyToOne(optional = true) - дефолт, который будет использовать outer join
     // @ManyToOne(optional = false) - заменит outer join на inner join, это лучше для производительности и используем, если в БД company_id содержит constraint not null
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "company_id")
     private Company company;
 }
