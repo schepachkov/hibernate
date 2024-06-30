@@ -3,7 +3,7 @@ package ru.schepachkov.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -21,8 +21,14 @@ public class Company {
 
     private String name;
 
-    @OneToMany(mappedBy = "company")// mappedBy - используется для установки двунаправленной связи - ссылаемся на имя поля в классе User
+    @Builder.Default    // для инициализации в билдере дефолтного значения new HashSet<>();
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)// mappedBy - используется для установки двунаправленной связи - ссылаемся на имя поля в классе User
     //@JoinColumn(name = "company_id") - используется для односторонней связи - ссылка на колонку, являющуюся fk в реляционной таблице.
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
+
+    public void addUser(User user) {
+        users.add(user);
+        user.setCompany(this);
+    }
 
 }
