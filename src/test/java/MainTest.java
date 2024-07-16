@@ -14,7 +14,8 @@ import java.util.UUID;
 public class MainTest {
 
     @Test
-    public void checkOneToOne() {
+    public void checkOneToOne_PkIsFkInProfileTableCase() {
+        // тест для ситуации, когда pk юзера является одновременно и внешним ключом в таблице профилей и первичным у нее же
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory(); Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             Company company = Company.builder()
@@ -31,6 +32,39 @@ public class MainTest {
             session.save(company);
             profile.setUser(user);      // такая запись говнище, суть в том, что сделали user.setProfile(this); и как следсвтие подтянули профиль при комите
             session.getTransaction().commit();
+        }
+    }
+
+    @Test
+    public void checkOneToOne_CommonCase() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory(); Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Company company = Company.builder()
+                .name("kek company" + UUID.randomUUID().toString().substring(0, 5))
+                .build();
+            User user = User.builder()
+                .userName(UUID.randomUUID().toString().substring(0, 8))
+                .build();
+
+            // exchange keys USER - COMPANY
+            company.getUsers().add(user);
+            user.setCompany(company);
+
+
+            Profile profile = Profile.builder()
+                .language("ru")
+                .street("kek street")
+                .build();
+
+            // exchange keys USER - PROFILE
+            user.setProfile(profile);
+            profile.setUser(user);
+
+            session.save(company);
+            session.getTransaction().commit();
+            // ИТОГО: если не накинуть связи в обе стороны то будем выхватывать ошибки.
+            // Видимо хиберу это необходимо, чтобы понять, что эта пачка взаимосвязана, в одну сторону не прокатит
+            // company.getUsers().add(user); + user.setProfile(profile);
         }
     }
 
