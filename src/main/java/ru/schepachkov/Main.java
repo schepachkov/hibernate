@@ -23,7 +23,7 @@ public class Main {
             User user = createFullFilledUser();
             session.beginTransaction();
 
-            //session.saveOrUpdate(user.getCompany());
+            session.saveOrUpdate(user.getCompany());
             session.saveOrUpdate(user);
             User user1 = session.get(User.class, 3L);
 

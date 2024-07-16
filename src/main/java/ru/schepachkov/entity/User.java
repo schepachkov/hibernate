@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "company")// чтоб случайно lazy объект не дернуть. Дебаг в идее использует toString, например
+@ToString(exclude = {"company", "profile"})// чтоб случайно lazy объект не дернуть. Дебаг в идее использует toString, например
+@EqualsAndHashCode(exclude = {"company", "profile"})
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
@@ -40,4 +41,8 @@ public class User {
     @ManyToOne(optional = false)
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile;
+
 }

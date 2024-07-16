@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import ru.schepachkov.entity.Company;
+import ru.schepachkov.entity.Profile;
 import ru.schepachkov.entity.User;
 import ru.schepachkov.util.HibernateUtil;
 
@@ -11,6 +12,27 @@ import java.util.UUID;
 
 @Slf4j
 public class MainTest {
+
+    @Test
+    public void checkOneToOne() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory(); Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Company company = Company.builder()
+                .name("kek company" + UUID.randomUUID().toString().substring(0, 5))
+                .build();
+            User user = User.builder()
+                .userName(UUID.randomUUID().toString().substring(0, 8))
+                .build();
+            company.addUser(user);
+            Profile profile = Profile.builder()
+                .language("ru")
+                .street("kek street")
+                .build();
+            session.save(company);
+            profile.setUser(user);      // такая запись говнище, суть в том, что сделали user.setProfile(this); и как следсвтие подтянули профиль при комите
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     public void testCascadeDelete() {

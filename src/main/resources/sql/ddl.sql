@@ -15,3 +15,10 @@ CREATE TABLE users
     info       JSONB,
     company_id INT references company (id) ON DELETE CASCADE NOT NULL
 );
+
+CREATE TABLE profile
+(
+    user_id BIGINT PRIMARY KEY REFERENCES users(id),
+    street VARCHAR(128),
+    language CHAR(2)
+);
