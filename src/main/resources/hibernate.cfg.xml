@@ -16,6 +16,7 @@
     <mapping class="ru.schepachkov.entity.Company"/>
     <mapping class="ru.schepachkov.entity.Profile"/>
     <mapping class="ru.schepachkov.entity.Chat"/>
+    <mapping class="ru.schepachkov.entity.UserChat"/>
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
   </session-factory>

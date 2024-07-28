@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.schepachkov.entity.*;
 import ru.schepachkov.util.HibernateUtil;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -20,15 +21,25 @@ public class ManyToManyTest {
 
             User user = createUser();
             Chat chat = Chat.builder()
-                .name("chat-name")
+                .name("chat-name" + UUID.randomUUID().toString().substring(0, 8))
                 .build();
             session.save(user.getCompany());        // компанию тоже только создали, поэтому сохраняем в первую очередь
-            session.save(user);                 // сохраняем, что б не получить TransientPropertyValueException. Если б брали из БД, то это не нужно.
-            user.getChats().add(chat);          // заполняем ссылку на чат и на юзер - так правильно
-            chat.getUsers().add(user);
-
+            session.save(user);                     // сохраняем, что б не получить TransientPropertyValueException. Если б брали из БД, то это не нужно.
             session.save(chat);
 
+            UserChat userChat = UserChat.builder()
+                .createdAt(Instant.now())
+                .createdBy(user.getUserName())
+                .build();
+
+            // добавляем ссылки
+            userChat.setUser(user);
+            user.getUserChats().add(userChat);      // если сущность доставалась из Хибера, то get Коллекцию генерил бы запрос в БД на поиск => outer/inner join
+            // добавляем ссылки
+            userChat.setChat(chat);
+            chat.getUserChats().add(userChat);
+
+            session.save(userChat);
             session.getTransaction().commit();
         }
     }
