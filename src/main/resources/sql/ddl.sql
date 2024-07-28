@@ -28,7 +28,8 @@ CREATE TABLE users_chat
     user_id BIGINT REFERENCES users(id),
     chat_id BIGINT REFERENCES chat(id),
     created_at TIMESTAMP NOT NULL,
-    created_by VARCHAR(128) NOT NULL
+    created_by VARCHAR(128) NOT NULL,
+    UNIQUE (user_id, chat_id)
 );
 
 CREATE TABLE profile
