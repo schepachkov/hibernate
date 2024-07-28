@@ -34,7 +34,7 @@ public class ManyToManyTest {
 
             // добавляем ссылки
             userChat.setUser(user);
-            user.getUserChats().add(userChat);      // если сущность доставалась из Хибера, то get Коллекцию генерил бы запрос в БД на поиск => outer/inner join
+            user.getUserChats().add(userChat);      // если сущность доставалась из Хибера, то getКоллекция генерил бы запрос в БД на поиск => outer/inner join (но только если это Set)
             // добавляем ссылки
             userChat.setChat(chat);
             chat.getUserChats().add(userChat);
